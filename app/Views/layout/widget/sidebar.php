@@ -34,9 +34,17 @@
                         <ul class="nav nav-collapse">
                             <li><a href="<?= base_url('about_our_company') ?>"><span class="sub-item">About Our Company</span></a>
                             </li>
+                            <li><a href="<?= base_url('product_strength') ?>"><span class="sub-item">Product Strength</span></a>
+                            </li>
+                            <li><a href="<?= base_url('testimonials') ?>"><span class="sub-item">Testimonials</span></a>
+                            </li>
+                            <li><a href="<?= base_url('youtube') ?>"><span class="sub-item">Youtube</span></a></li>
                         </ul>
                     </div>
                 </li>
+                <li class="nav-item"><a href="<?= base_url('about_us') ?>"><i class="fa-regular fa-address-card"></i>
+                        <p>About Us</p>
+                    </a></li>
                 <li class="nav-item"><a href="<?= base_url('contact_us') ?>"><i class="fas fa-envelope"></i>
                         <p>Contact Us</p>
                     </a></li>

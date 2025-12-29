@@ -12,10 +12,5 @@ class AboutUs extends BaseController
         parent::__construct();
         $db = \Config\Database::connect();
     } 
-
-    public function aboutOurCompany(){
-        // $model = new AboutOurCompanyModel();
-        // $data['about'] = $model->first();
-        return view('admin/home/aboutOurCompany');
-    }
+ 
 }

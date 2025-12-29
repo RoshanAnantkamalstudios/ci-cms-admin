@@ -34,7 +34,7 @@
     <link rel="stylesheet" href="<?= base_url() ?>public/assets/css/bootstrap.min.css" />
     <link rel="stylesheet" href="<?= base_url() ?>public/assets/css/plugins.min.css" />
     <link rel="stylesheet" href="<?= base_url() ?>public/assets/css/kaiadmin.min.css" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="<?= base_url() ?>public/assets/css/demo.css" />
 </head>
