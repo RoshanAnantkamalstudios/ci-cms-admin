@@ -32,7 +32,12 @@
                     </a>
                     <div class="collapse" id="home">
                         <ul class="nav nav-collapse">
-                            <li><a href="<?= base_url('about_our_company') ?>"><span class="sub-item">About Our Company</span></a>
+                            <!-- <li><a href="<?= base_url('about_our_company') ?>"><span class="sub-item">About Our Company</span></a> -->
+                            <li><a href="<?= base_url('admin/homehero') ?>"><span class="sub-item">Hero Section</span></a>
+                             <li><a href="<?= base_url('admin/homewhychoose') ?>"><span class="sub-item">Why Choose Us Section</span></a>
+                              <li><a href="<?= base_url('admin/ourclients') ?>"><span class="sub-item">Our Clients</span></a>
+
+
                             </li>
                             <li><a href="<?= base_url('product_strength') ?>"><span class="sub-item">Product Strength</span></a>
                             </li>
@@ -47,6 +52,8 @@
                     </a></li>
                 <li class="nav-item"><a href="<?= base_url('contact_us') ?>"><i class="fas fa-envelope"></i>
                         <p>Contact Us</p>
+                <li class="nav-item"><a href="<?= base_url('admin/bannersection') ?>"><i class="fas fa-envelope"></i>
+                        <p>All Banners Section</p>
                     </a></li>
             </ul>
         </div>

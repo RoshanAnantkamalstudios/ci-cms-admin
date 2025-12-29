@@ -1,25 +1,334 @@
 <?php
-
-namespace App\Controllers\Admin;
+namespace App\Controllers\admin;
 
 use App\Controllers\BaseController;
+use CodeIgniter\HTTP\ResponseInterface;
+use App\Models\Home\HomeHeroModel; 
+use App\Models\Home\HomeWhyChooseModel; 
+use App\Models\Home\OurClientModel; 
 use App\Models\Home\AboutCompanyModel;
 use App\Models\Home\TestimonialModel;
 use App\Models\Home\YoutubeModel;
+use App\Models\AboutUsModel;
 
 class HomeController extends BaseController
 {
+    protected $heroModel;
+    protected $WhyChooseModel;
+    protected $ourClientSection;
+
     protected $aboutModel;
     protected $testimonialModel;
     protected $youtubeModel;
+    protected $aboutUsModel;
     protected $db;
-
+ 
     public function __construct()
     {
+        $this->heroModel = new HomeHeroModel();
+        $this->WhyChooseModel = new HomeWhyChooseModel();
+        $this->ourClientSection = new OurClientModel();
         $this->aboutModel = new AboutCompanyModel();
         $this->testimonialModel = new TestimonialModel();
         $this->youtubeModel = new YoutubeModel();
+        $this->aboutUsModel = new AboutUsModel();
         $this->db = \Config\Database::connect();
+    }
+    public function Herosection()
+    {
+        $hero = $this->heroModel->first();
+
+        if ($hero && !empty($hero['images'])) {
+            $hero['images'] = json_decode($hero['images'], true);
+        }
+
+        return view('admin/home/heroSection', ['hero' => $hero]);
+    }
+
+      public function saveherosection()
+    {
+        $post  = $this->request->getPost();
+        $files = $this->request->getFiles();
+
+        $images = json_decode($post['existing_images'] ?? '[]', true);
+
+        if (!empty($files['hero_images'])) {
+            foreach ($files['hero_images'] as $file) {
+                if ($file->isValid() && !$file->hasMoved()) {
+                    $name = $file->getRandomName();
+                    $file->move('uploads/hero', $name);
+                    $images[] = 'uploads/hero/' . $name;
+                }
+            }
+        }
+
+        $data = [
+            'small_title' => $post['small_title'],
+            'main_title'  => $post['main_title'],
+            // 'sub_title'   => $post['sub_title'],
+            'description' => $post['description'],
+            'button_text' => $post['button_text'],
+            'button_link' => $post['button_link'],
+            'images'      => json_encode($images),
+            'status'      => 1
+        ];
+
+        if (!empty($post['id'])) {
+            $this->heroModel->update($post['id'], $data);
+        } else {
+            $this->heroModel->insert($data);
+        }
+
+        return redirect()->back()->with('success', 'Hero updated successfully');
+    }
+
+        public function getherodata()
+    {
+        $hero = $this->heroModel
+            ->where('status', 1)
+            ->first();
+
+        if (!$hero) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'status'  => false,
+                'message' => 'Hero content not found'
+            ]);
+        }
+
+        // Decode images JSON
+        $hero['images'] = !empty($hero['images'])
+            ? json_decode($hero['images'], true)
+            : [];
+
+        return $this->response->setJSON([
+            'status' => true,
+            'data'   => $hero
+        ]);
+    } 
+
+
+     public function Whychoosesection()
+    {
+        $data['data'] = $this->WhyChooseModel->getData();
+     
+        return view('admin/home/whyChooseSection',$data);
+    }
+
+    public function whychoosesave()
+    {
+        $validation = \Config\Services::validation();
+
+        $validation->setRules([
+            'heading' => 'required|min_length[3]|max_length[255]',
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('error', 'Please fill the heading field correctly.');
+        }
+
+        try {
+            $heading = $this->request->getPost('heading');
+            $cardsInput = $this->request->getPost('cards');
+            $cardsData = [];
+
+            // Create upload directory if it doesn't exist
+            $uploadPath = ROOTPATH . 'public/uploads/cards';
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            if ($cardsInput && is_array($cardsInput)) {
+                foreach ($cardsInput as $index => $card) {
+                    $iconPath = null;
+
+                    // Handle icon upload
+                    $iconFile = $this->request->getFile("cards.{$index}.icon");
+                    
+                    if ($iconFile && $iconFile->isValid() && !$iconFile->hasMoved()) {
+                        // Upload new icon
+                        $newName = $iconFile->getRandomName();
+                        $iconFile->move($uploadPath, $newName);
+                        $iconPath = 'uploads/cards/' . $newName;
+                    } elseif (!empty($card['existing_icon'])) {
+                        // Keep existing icon
+                        $iconPath = $card['existing_icon'];
+                    }
+
+                    $cardsData[] = [
+                        'icon' => $iconPath,
+                        'title' => $card['title'],
+                        'description' => $card['description']
+                    ];
+                }
+            }
+
+            // Save data
+            if ($this->WhyChooseModel->saveData($heading, $cardsData)) {
+                return redirect()->to(base_url('admin/homewhychoose'))->with('success', 'Cards saved successfully!');
+            } else {
+                return redirect()->back()->with('error', 'Failed to save cards!');
+            }
+
+        } catch (\Exception $e) {
+            log_message('error', 'Cards save error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
+    }
+ 
+     public function whychoosedelete($id)
+    {
+        $about = $this->WhyChooseModel->find($id);
+
+        if ($about) {
+            // delete main icon
+            if ($about['icon'] && file_exists($about['icon'])) {
+                unlink($about['icon']);
+            }
+
+            // delete card icons
+            $cards = json_decode($about['cards'], true);
+            if ($cards) {
+                foreach ($cards as $card) {
+                    if (!empty($card['icon']) && file_exists($card['icon'])) {
+                        unlink($card['icon']);
+                    }
+                }
+            }
+
+            $this->WhyChooseModel->delete($id);
+        }
+
+        return redirect()->to(base_url('admin/homewhychoose'))
+                         ->with('success', 'Section deleted successfully');
+    }
+
+    public function getwhychooseusCards()
+    {
+        try {
+            $data = $this->WhyChooseModel->getData();
+            
+            // Add full URL to icons
+            if (!empty($data['cards'])) {
+                foreach ($data['cards'] as &$card) {
+                    if (!empty($card['icon'])) {
+                        $card['icon'] = base_url($card['icon']);
+                    }
+                }
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'data' => $data
+            ]);
+
+        } catch (\Exception $e) {
+            log_message('error', 'API error: ' . $e->getMessage());
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'An error occurred while fetching data'
+            ]);
+        }
+    }
+
+
+    //our client Section
+       public function ourclients()
+    {
+        // $data['about'] = $this->ourClientSection->first();
+        // return view('admin/home/ourclientsSection', $data);
+                return view('admin/home/ourclientsSection', [
+            'about' => $this->ourClientSection->first()
+        ]);
+    }
+
+
+    public function ourclientssave()
+    {
+        $id = $this->request->getPost('id');
+
+        /* ========= MAIN ICON ========= */
+        $iconPath = null;
+        $icon = $this->request->getFile('icon');
+
+        if ($icon && $icon->isValid() && !$icon->hasMoved()) {
+            $name = $icon->getRandomName();
+            $icon->move('uploads/about', $name);
+            $iconPath = 'uploads/about/' . $name;
+        }
+
+        /* ========= CARDS ========= */
+        $cards = [];
+        $cardData = $this->request->getPost('cards') ?? [];
+
+        foreach ($cardData as $i => $card) {
+
+            // 🔴 DELETE SPECIFIC CARD
+            if (!empty($card['deleted']) && $card['deleted'] == 1) {
+                if (!empty($card['old_icon']) && file_exists($card['old_icon'])) {
+                    unlink($card['old_icon']);
+                }
+                continue;
+            }
+
+            // SAFE DEFAULTS
+            $cardId   = $card['id'] ?? uniqid('c_');
+            $iconPathCard = $card['old_icon'] ?? null;
+
+            // Upload card icon
+            $file = $this->request->getFile("cards.$i.icon");
+            if ($file && $file->isValid() && !$file->hasMoved()) {
+                $img = $file->getRandomName();
+                $file->move('uploads/about', $img);
+                $iconPathCard = 'uploads/about/' . $img;
+            }
+
+            $cards[] = [
+                'id'               => $cardId,
+                'icon'             => $iconPathCard,
+                'aboutTitle'       => $card['aboutTitle'] ?? '',
+                'aboutDescription' => $card['aboutDescription'] ?? ''
+            ];
+        }
+
+        /* ========= SAVE ========= */
+        $data = [
+            'short_title' => $this->request->getPost('short_title'),
+            'heading'     => $this->request->getPost('heading'),
+            'cards'       => json_encode($cards)
+        ];
+
+        if ($iconPath) {
+            $data['icon'] = $iconPath;
+        }
+
+        $id ? $this->ourClientSection->update($id, $data)
+            : $this->ourClientSection->insert($data);
+
+        return redirect()->back()->with('success', 'Saved successfully');
+    }
+
+    public function ourclientsdelete($id)
+    {
+        $record = $this->ourClientSection->find($id);
+        
+        if ($record) {
+             // delete main icon
+             if ($record['icon'] && file_exists($record['icon'])) {
+                 unlink($record['icon']);
+             }
+             
+             // delete card icons
+             $cards = json_decode($record['cards'], true) ?? [];
+             foreach ($cards as $card) {
+                 if (!empty($card['icon']) && file_exists($card['icon'])) {
+                     unlink($card['icon']);
+                 }
+             }
+             
+             $this->ourClientSection->delete($id);
+        }
+        
+        return redirect()->back()->with('success', 'Deleted successfully');
     }
 
     public function aboutOurCompany()
@@ -810,5 +1119,135 @@ class HomeController extends BaseController
         } catch (\Exception $e) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Error fetching data'])->setStatusCode(500);
         }
+    }
+
+    // About Us Module
+    public function aboutUs()
+    {
+        $record = $this->aboutUsModel->first();
+        
+        // Decode JSON fields if they exist
+        if ($record) {
+            $jsonFields = ['about_cards', 'quality_cards', 'vision_cards', 'values_cards', 'questions'];
+            foreach ($jsonFields as $field) {
+                $record[$field] = json_decode($record[$field] ?? '[]', true);
+            }
+        }
+        
+        return view('admin/aboutUs', ['record' => $record]);
+    }
+
+    public function saveAboutUs()
+    {
+        $existingRecord = $this->aboutUsModel->first();
+        $id = $existingRecord['id'] ?? null;
+        
+        $data = [
+            'about_icon' => $this->request->getPost('about_icon'),
+            'about_heading' => $this->request->getPost('about_heading'),
+            'quality_icon' => $this->request->getPost('quality_icon'),
+            'quality_heading' => $this->request->getPost('quality_heading'),
+            'values_heading' => $this->request->getPost('values_heading'),
+        ];
+
+        // Ensure upload directory exists
+        $uploadPath = FCPATH . 'uploads/about_us';
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+
+        // Helper to handle file upload
+        $handleUpload = function($fileField, $existingValue = null) use ($uploadPath) {
+            $file = $this->request->getFile($fileField);
+            if ($file && $file->isValid() && !$file->hasMoved()) {
+                $newName = $file->getRandomName();
+                $file->move($uploadPath, $newName);
+                return $newName;
+            }
+            return $existingValue;
+        };
+
+        // Main Images
+        $data['quality_bg_image'] = $handleUpload('quality_bg_image', $existingRecord['quality_bg_image'] ?? null);
+        $data['values_image'] = $handleUpload('values_image', $existingRecord['values_image'] ?? null);
+
+        // Process Cards
+        $processCards = function($prefix, $fileFields = []) use ($uploadPath) {
+            $cards = $this->request->getPost($prefix) ?? [];
+            $processedCards = [];
+            
+            foreach ($cards as $index => $card) {
+                // Handle file uploads for this card
+                foreach ($fileFields as $dbField => $formField) {
+                    $file = $this->request->getFile("$prefix.$index.$formField");
+                    $existing = $card['existing_' . $formField] ?? null;
+                    
+                    if ($file && $file->isValid() && !$file->hasMoved()) {
+                        $newName = $file->getRandomName();
+                        $file->move($uploadPath, $newName);
+                        $card[$dbField] = $newName;
+                    } else {
+                        $card[$dbField] = $existing;
+                    }
+                    
+                    // Remove temporary fields
+                    unset($card['existing_' . $formField]);
+                }
+                $processedCards[] = $card;
+            }
+            return json_encode($processedCards);
+        };
+
+        $data['about_cards'] = $processCards('about_cards', ['image' => 'image']);
+        $data['quality_cards'] = $processCards('quality_cards', ['image' => 'image']);
+        $data['vision_cards'] = $processCards('vision_cards'); // No images
+        $data['values_cards'] = $processCards('values_cards', ['value_image' => 'value_image']);
+        $data['questions'] = $processCards('questions', ['question_image' => 'question_image']);
+
+        if ($id) {
+            $this->aboutUsModel->update($id, $data);
+        } else {
+            $this->aboutUsModel->insert($data);
+        }
+
+        return redirect()->back()->with('success', 'About Us updated successfully');
+    }
+
+    public function getAboutUsJson()
+    {
+        $record = $this->aboutUsModel->first();
+        
+        if (!$record) {
+            return $this->response->setJSON(['status' => false, 'message' => 'No data found']);
+        }
+        
+        // Helper to decode and add full URLs
+        $processJson = function($json, $imageFields = []) {
+            $data = json_decode($json ?? '[]', true);
+            foreach ($data as &$item) {
+                foreach ($imageFields as $field) {
+                    if (!empty($item[$field])) {
+                        $item[$field . '_url'] = base_url('uploads/about_us/' . $item[$field]);
+                    }
+                }
+            }
+            return $data;
+        };
+
+        $record['about_cards'] = $processJson($record['about_cards'], ['image']);
+        $record['quality_cards'] = $processJson($record['quality_cards'], ['image']);
+        $record['vision_cards'] = $processJson($record['vision_cards']);
+        $record['values_cards'] = $processJson($record['values_cards'], ['value_image']);
+        $record['questions'] = $processJson($record['questions'], ['question_image']);
+        
+        // Main images
+        if (!empty($record['quality_bg_image'])) {
+            $record['quality_bg_image_url'] = base_url('uploads/about_us/' . $record['quality_bg_image']);
+        }
+        if (!empty($record['values_image'])) {
+            $record['values_image_url'] = base_url('uploads/about_us/' . $record['values_image']);
+        }
+
+        return $this->response->setJSON(['status' => true, 'data' => $record]);
     }
 }

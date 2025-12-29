@@ -43,15 +43,15 @@ $routes->post('/admin/testimonials/delete-card-image', 'admin\HomeController::te
 $routes->get('/youtube', 'admin\HomeController::youtube');
 $routes->post('/admin/youtube/save', 'admin\HomeController::saveYoutube');
 
-$routes->get('/about_us', 'admin\AboutUsController::aboutUs');
-$routes->post('/admin/about-us/save', 'admin\AboutUsController::saveAboutUs');
+$routes->get('/about_us', 'admin\HomeController::aboutUs');
+$routes->post('/admin/about-us/save', 'admin\HomeController::saveAboutUs');
 
 
 $routes->get('/api/about_our_company', 'admin\HomeController::aboutCompanyJson');
 $routes->get('/api/product_strength', 'admin\HomeController::getProductStrenthJson');
 $routes->get('/api/testimonials', 'admin\HomeController::getTestimonialJson');
 $routes->get('/api/youtube', 'admin\HomeController::getYoutubeJson');
-$routes->get('/api/about-us', 'admin\AboutUsController::getAboutUsJson');
+$routes->get('/api/about-us', 'admin\HomeController::getAboutUsJson');
 
 // $routes->post('login_action', 'admin\Auth::login_action');
 
@@ -65,3 +65,35 @@ $routes->get('deleteAlumeni/(:num)', 'admin\Alumeni::delete/$1');
 $routes->get('/contact_us', 'admin\Contactus::Index');
 $routes->post('saveHero', 'admin\Contactus::saveHero');
 $routes->post('save-communication', 'admin\Contactus::saveCommunication');
+
+$routes->get('/about_our_company', 'admin\AboutUs::aboutOurCompany');
+
+$routes->group('admin', function ($routes) {
+    $routes->get('homehero', 'Admin\HomeController::Herosection');
+    $routes->post('hero/save', 'Admin\HomeController::saveherosection');
+   $routes->get('homewhychoose', 'Admin\HomeController::Whychoosesection');
+   $routes->post('homewhychoose/save', 'Admin\HomeController::whychoosesave');
+    $routes->get('homewhychoose/delete/(:num)', 'Admin\HomeController::whychoosedelete/$1');
+
+    //ourclients 
+    $routes->get('ourclients', 'Admin\HomeController::ourclients');
+    $routes->post('ourclients/ourclientssave', 'Admin\HomeController::ourclientssave');
+    $routes->get('ourclients/ourclientsdelete/(:num)', 'Admin\HomeController::ourclientsdelete/$1');
+
+    //banner section 
+
+      $routes->get('bannersection', 'Admin\Bannersection::index');
+    $routes->get('bannersection/fetch', 'Admin\Bannersection::fetch');
+    $routes->post('bannersection/save', 'Admin\Bannersection::save');
+    $routes->get('bannersection/edit/(:num)', 'Admin\Bannersection::edit/$1');
+    $routes->get('bannersection/delete/(:num)', 'Admin\Bannersection::delete/$1');
+ 
+});
+
+$routes->group('api', function ($routes) {
+    $routes->get('getherodata', 'Admin\HomeController::getherodata');
+    $routes->get('getwhychooseusCards', 'Admin\HomeController::getwhychooseusCards');
+       $routes->get('getbanner', 'Admin\Bannersection::banner_data');
+
+});
+ 

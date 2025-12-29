@@ -4,19 +4,19 @@ namespace App\Models\Home;
 
 use CodeIgniter\Model;
 
-class FacultyModel extends Model
+class HomeHeroModel extends Model
 {
-    protected $table = 'faculty_members';
+    protected $table = 'home_hero';
     protected $primaryKey = 'id';
+
     protected $allowedFields = [
+        'small_title',
         'main_title',
         'sub_title',
-        'name',
-        'designation',
-        'department',
         'description',
-        'image',
-        'sort_order',
+        'button_text',
+        'button_link',
+        'images',
         'status'
     ];
 }

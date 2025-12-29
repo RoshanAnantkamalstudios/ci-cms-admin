@@ -4,18 +4,18 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class AlumniPageModel extends Model
+class BannerModel extends Model
 {
-    protected $table = 'alumni_page_sections';
+    protected $table      = 'banner_section';
     protected $primaryKey = 'id';
+
     protected $allowedFields = [
-        'section_type',
+        'page_key',
         'title',
         'subtitle',
-        'content',
-        'image',
-        'extra_data',
-        'order',
+        'banner_image',
         'status'
     ];
+
+    protected $useTimestamps = true;
 }
