@@ -32,22 +32,8 @@
                     </a>
                     <div class="collapse" id="home">
                         <ul class="nav nav-collapse">
-                            <li><a href="<?= base_url('carousel') ?>"><span class="sub-item">Carousel Section</span></a>
+                            <li><a href="#"><span class="sub-item">Carousel Section</span></a>
                             </li>
-                            <li><a href="<?= base_url('aboutsection') ?>"><span class="sub-item">About BVCTE</span></a>
-                            </li>
-                            <li><a href="<?= base_url('coursessection') ?>"><span class="sub-item">Courses
-                                        Section</span></a></li>
-                            <li><a href="<?= base_url('facilitiessection') ?>"><span class="sub-item">Facilities
-                                        Section</span></a></li>
-                            <li><a href="<?= base_url('gallerySection') ?>"><span class="sub-item">Gallery
-                                        Section</span></a></li>
-                            <li><a href="<?= base_url('registration') ?>"><span class="sub-item">Registration
-                                        Area</span></a></li>
-                            <li><a href="<?= base_url('expertStaff') ?>"><span class="sub-item">Expert Staff</span></a>
-                            </li>
-                            <li><a href="<?= base_url('placementsSection') ?>"><span class="sub-item">Placements
-                                        Section</span></a></li>
                         </ul>
                     </div>
                 </li>
