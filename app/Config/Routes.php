@@ -87,13 +87,41 @@ $routes->group('admin', function ($routes) {
     $routes->post('bannersection/save', 'Admin\Bannersection::save');
     $routes->get('bannersection/edit/(:num)', 'Admin\Bannersection::edit/$1');
     $routes->get('bannersection/delete/(:num)', 'Admin\Bannersection::delete/$1');
+
+    //certificates
+
+      $routes->get('certificates', 'Admin\Certificates::index');
+
+    // Save / Update (AJAX + multipart)
+    $routes->post('certificates/save', 'Admin\Certificates::saveCertificates');
+
+    //products
+
+$routes->get('product-category', 'Admin\ProductCategory::index');
+$routes->post('product-category/save', 'Admin\ProductCategory::save');
+    $routes->get('product-category/edit/(:num)', 'Admin\ProductCategory::edit/$1');
+    $routes->post('product-category/update/(:num)', 'Admin\ProductCategory::update/$1');
+    $routes->get('product-category/delete/(:num)', 'Admin\ProductCategory::delete/$1');
+
+        $routes->get('products', 'Admin\Products::index');
+    $routes->get('products/create', 'Admin\Products::create');
+    $routes->post('products/store', 'Admin\Products::store');
+    $routes->get('products/edit/(:num)', 'Admin\Products::edit/$1');
+    $routes->post('products/update/(:num)', 'Admin\Products::update/$1');
+    $routes->get('products/delete/(:num)', 'Admin\Products::delete/$1');
+    $routes->post('products/deleteImage', 'Admin\Products::deleteImage');
  
 });
 
 $routes->group('api', function ($routes) {
     $routes->get('getherodata', 'Admin\HomeController::getherodata');
     $routes->get('getwhychooseusCards', 'Admin\HomeController::getwhychooseusCards');
-       $routes->get('getbanner', 'Admin\Bannersection::banner_data');
+    $routes->get('getbanner', 'Admin\Bannersection::banner_data');
+    $routes->get('getcertificates', 'Admin\Certificates::getcertificatedata');
+
+    $routes->get('productsdata', 'Admin\ProductsApi::productBySlug');                // all products
+    $routes->get('productsdata/(:segment)', 'Admin\ProductsApi::productBySlug/$1');
+
 
 });
  
