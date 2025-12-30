@@ -60,11 +60,31 @@
                         <p>Services</p>
                     </a></li>
                 <li class="nav-item"><a href="<?= base_url('admin/contact_us') ?>"><i class="fas fa-envelope"></i>
+                <li class="nav-item"><a href="<?= base_url('admin/certificates') ?>"><i class="fa-regular fa-address-card"></i>
+                        <p>Certificate Section</p>
+                    </a></li>
+                <li class="nav-item"><a href="<?= base_url('contact_us') ?>"><i class="fas fa-envelope"></i>
                         <p>Contact Us</p>
                     </a></li>
                 <li class="nav-item"><a href="<?= base_url('admin/bannersection') ?>"><i class="fas fa-image"></i>
                         <p>All Banners Section</p>
                     </a></li>
+
+                <li class="nav-item">
+                    <a data-bs-toggle="collapse" href="#product">
+                        <i class="fas fa-th-list"></i>
+                        <p>Products</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse" id="product">
+                        <ul class="nav nav-collapse">
+                            <!-- <li><a href="<?= base_url('about_our_company') ?>"><span class="sub-item">About Our Company</span></a> -->
+                            <li><a href="<?= base_url('admin/product-category') ?>"><span class="sub-item"> Product Category</span></a>
+                            <li><a href="<?= base_url('admin/products') ?>"><span class="sub-item">Products </span></a>
+
+                        </ul>
+                    </div>
+                </li>
             </ul>
         </div>
     </div>
