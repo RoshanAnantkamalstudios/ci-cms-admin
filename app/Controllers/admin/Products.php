@@ -82,7 +82,7 @@ class Products extends BaseController
             'other_section'  => json_encode($other_section)
         ]);
 
-        return redirect()->to(base_url('admin/products'))->with('success', 'Product added successfully');
+        return redirect()->to(base_url('admin/grocery_products'))->with('success', 'Product added successfully');
     }
 
     // Show Edit form
@@ -164,7 +164,7 @@ class Products extends BaseController
             'other_section'  => json_encode($other_section)
         ]);
 
-        return redirect()->to(base_url('admin/products'))->with('success', 'Product updated successfully');
+        return redirect()->to(base_url('admin/grocery_products'))->with('success', 'Product updated successfully');
     }
 
     // Delete product
@@ -185,7 +185,7 @@ class Products extends BaseController
 
         $this->productModel->delete($id);
 
-        return redirect()->to(base_url('admin/products'))->with('success', 'Product deleted successfully');
+        return redirect()->to(base_url('admin/grocery_products'))->with('success', 'Product deleted successfully');
     }
 
     // Get product(s) by slug or all

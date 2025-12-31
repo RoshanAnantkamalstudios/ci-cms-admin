@@ -104,7 +104,7 @@ $routes->group('admin', function ($routes) {
     $routes->post('product-category/update/(:num)', 'Admin\ProductCategory::update/$1');
     $routes->get('product-category/delete/(:num)', 'Admin\ProductCategory::delete/$1');
 
-    $routes->get('products', 'Admin\Products::index');
+    $routes->get('grocery_products', 'Admin\Products::index');
     $routes->get('products/create', 'Admin\Products::create');
     $routes->post('products/store', 'Admin\Products::store');
     $routes->get('products/edit/(:num)', 'Admin\Products::edit/$1');

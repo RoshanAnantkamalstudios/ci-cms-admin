@@ -80,7 +80,7 @@
                         <ul class="nav nav-collapse">
                             <!-- <li><a href="<?= base_url('about_our_company') ?>"><span class="sub-item">About Our Company</span></a> -->
                             <li><a href="<?= base_url('admin/product-category') ?>"><span class="sub-item"> Product Category</span></a>
-                            <li><a href="<?= base_url('admin/products') ?>"><span class="sub-item">Products </span></a>
+                            <li><a href="<?= base_url('admin/grocery_products') ?>"><span class="sub-item">Products </span></a>
 
                         </ul>
                     </div>
