@@ -24,13 +24,12 @@
         <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
             <li class="nav-item topbar-user dropdown hidden-caret">
                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-                    <div class="avatar-sm">
+                    <div class="avatar-sm me-2">
                         <img src="<?= base_url() ?>public/assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle" />
                     </div>
-                    <span class="profile-username">
-                        <span class="op-7">Hi,</span>
-                        <span class="fw-bold">Hizrian</span>
-                    </span>
+                    <div class="u-text d-flex flex-column text-center justify-content-center align-items-center">
+                        <p class="text-muted m-0 p-0"><?= htmlspecialchars(session()->get('email') ?? 'hello@example.com') ?></p>
+                    </div>
                 </a>
                 <ul class="dropdown-menu dropdown-user animated fadeIn">
                     <div class="dropdown-user-scroll scrollbar-outer">
@@ -40,8 +39,8 @@
                                     <img src="<?= base_url() ?>public/assets/img/profile.jpg" alt="image profile" class="avatar-img rounded" />
                                 </div>
                                 <div class="u-text">
-                                    <h4>Hizrian</h4>
-                                    <p class="text-muted">hello@example.com</p>
+                                    <p><?= htmlspecialchars(session()->get('name') ?? 'Admin') ?></p>
+                                    <p class="text-muted"><?= htmlspecialchars(session()->get('email') ?? 'hello@example.com') ?></p>
                                 </div>
                             </div>
                         </li>

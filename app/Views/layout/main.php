@@ -3,9 +3,9 @@
 
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>CMS</title>
+    <title>Bricks House - Admin Panel Dashboard</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-    <link rel="icon" href="<?= base_url() ?>public/front_end/img/logo.png" type="image/x-icon" />
+    <link rel="icon" href="<?= base_url() ?>public/brickhouse.png" type="image/x-icon" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Fonts and icons -->
@@ -29,7 +29,6 @@
             },
         });
     </script>
-
     <!-- CSS Files -->
     <link rel="stylesheet" href="<?= base_url() ?>public/assets/css/bootstrap.min.css" />
     <link rel="stylesheet" href="<?= base_url() ?>public/assets/css/plugins.min.css" />
@@ -41,7 +40,6 @@
 
 <body>
     <div class="wrapper">
-        <!-- Sidebar -->
         <?= $this->include("layout/widget/sidebar.php") ?>
         <!-- End Sidebar -->
 
@@ -63,7 +61,7 @@
                     <nav class="pull-left">
                         <ul class="nav">
                             <li class="nav-item">
-                                <a class="nav-link" href="http://www.themekita.com">
+                                <a class="nav-link" href="https://thebrickhouse.co.in/">
                                     Brick House
                                 </a>
                             </li>
