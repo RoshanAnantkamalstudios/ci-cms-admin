@@ -185,7 +185,7 @@
 
     <!-- Kaiadmin DEMO methods, don't include it in your project! -->
     <script src="<?= base_url() ?>public/assets/js/setting-demo.js"></script>
-    <script src="<?= base_url() ?>public/assets/js/demo.js"></script>
+    <!-- <script src="<?= base_url() ?>public/assets/js/demo.js"></script> -->
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.js"></script>
     <script>

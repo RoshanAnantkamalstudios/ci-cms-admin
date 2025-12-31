@@ -1,31 +1,41 @@
 <?= $this->extend('layout/main') ?>
 <?= $this->section('content') ?>
 
-<div class="container-fluid mt-4">
-    <div class="card shadow">
-        <div class="card-header">
-            <h5 class="mb-0">Our Clients Section CMS</h5>
+<div class="page-inner">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-title">Manage Our Clients</h2>
+    </div>
+
+    <?php if (session()->getFlashdata('success')): ?>
+        <div class="alert alert-success alert-dismissible fade show">
+            <?= session('success') ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
+    <?php endif; ?>
 
-        <div class="card-body">
+    <form method="post"
+          action="<?= base_url('admin/ourclients/ourclientssave') ?>"
+          enctype="multipart/form-data">
 
-            <?php if (session()->getFlashdata('success')): ?>
-                <div class="alert alert-success">
-                    <?= session()->getFlashdata('success') ?>
-                </div>
-            <?php endif; ?>
+        <input type="hidden" name="id" value="<?= $about['id'] ?? '' ?>">
 
-            <form method="post"
-                  action="<?= base_url('admin/ourclients/ourclientssave') ?>"
-                  enctype="multipart/form-data">
+        <!-- ===== SECTION DETAILS ===== -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white border-bottom py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fa fa-users me-2 text-secondary"></i>
+                    Our Clients Section
+                </h5>
+            </div>
 
-                <!-- SECTION ID -->
-                <input type="hidden" name="id" value="<?= $about['id'] ?? '' ?>">
+            <div class="card-body">
 
-                <!-- ===== SECTION HEADER ===== -->
-                <div class="row mb-3">
+                <div class="row mb-4">
                     <div class="col-md-4">
-                        <label class="form-label">Section Icon (SVG / PNG)</label>
+                        <label class="form-label small text-uppercase fw-bold text-muted">
+                            Section Icon
+                        </label>
                         <input type="file" name="icon" class="form-control">
                         <?php if (!empty($about['icon'])): ?>
                             <img src="<?= base_url($about['icon']) ?>" height="40" class="mt-2">
@@ -33,134 +43,161 @@
                     </div>
 
                     <div class="col-md-8">
-                        <label class="form-label">Short Title</label>
+                        <label class="form-label small text-uppercase fw-bold text-muted">
+                            Short Title
+                        </label>
                         <input type="text"
                                name="short_title"
                                class="form-control"
-                               value="<?= $about['short_title'] ?? '' ?>">
+                               value="<?= esc($about['short_title'] ?? '') ?>">
                     </div>
                 </div>
 
-                <div class="mb-4">
-                    <label class="form-label">Heading</label>
+                <div class="mb-3">
+                    <label class="form-label small text-uppercase fw-bold text-muted">
+                        Heading
+                    </label>
                     <input type="text"
                            name="heading"
                            class="form-control"
-                           value="<?= $about['heading'] ?? '' ?>">
+                           value="<?= esc($about['heading'] ?? '') ?>">
                 </div>
 
-                <hr>
+            </div>
+        </div>
 
-                <!-- ===== CARDS ===== -->
-                <h6 class="mb-3">Client Cards</h6>
+        <!-- ===== CLIENT CARDS ===== -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold text-uppercase text-muted">Client Cards</h6>
+                <button type="button" class="btn btn-outline-dark btn-sm" id="add-card">
+                    <i class="fa fa-plus me-1"></i> Add Card
+                </button>
+            </div>
 
-                <div id="cards-wrapper">
+            <div class="card-body">
+                <div class="row g-3" id="cards-wrapper">
+
                     <?php
                     $cards = !empty($about['cards'])
                         ? json_decode($about['cards'], true)
                         : [];
 
                     foreach ($cards as $i => $card):
-                        // ✅ SAFE FALLBACKS
                         $cardId   = $card['id'] ?? uniqid('c_');
                         $cardIcon = $card['icon'] ?? '';
                     ?>
-                        <div class="card mb-3 card-item">
+                    <div class="col-md-6 card-item">
+                        <div class="card h-100 border-0 shadow-sm bg-light">
                             <div class="card-body">
 
-                                <!-- REQUIRED HIDDEN FIELDS -->
+                                <!-- hidden fields -->
                                 <input type="hidden" name="cards[<?= $i ?>][id]" value="<?= $cardId ?>">
                                 <input type="hidden" name="cards[<?= $i ?>][deleted]" value="0" class="deleted-flag">
                                 <input type="hidden" name="cards[<?= $i ?>][old_icon]" value="<?= $cardIcon ?>">
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="form-label">Icon</label>
-                                        <input type="file"
-                                               name="cards[<?= $i ?>][icon]"
-                                               class="form-control">
-                                        <?php if (!empty($cardIcon)): ?>
-                                            <img src="<?= base_url($cardIcon) ?>"
-                                                 height="30"
-                                                 class="mt-2">
-                                        <?php endif; ?>
-                                    </div>
-
-                                    <div class="col-md-8">
-                                        <label class="form-label">Title</label>
-                                        <input type="text"
-                                               name="cards[<?= $i ?>][aboutTitle]"
-                                               class="form-control"
-                                               value="<?= $card['aboutTitle'] ?? '' ?>">
-                                    </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="badge bg-white border text-dark">
+                                        Card <?= $i + 1 ?>
+                                    </span>
+                                    <button type="button" class="btn btn-outline-danger btn-sm remove-card border-0">
+                                        <i class="fa fa-times"></i>
+                                    </button>
                                 </div>
 
-                                <div class="mt-2">
-                                    <label class="form-label">Description</label>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold text-muted text-uppercase">
+                                        Icon
+                                    </label>
+                                    <input type="file"
+                                           name="cards[<?= $i ?>][icon]"
+                                           class="form-control">
+
+                                    <?php if (!empty($cardIcon)): ?>
+                                        <div class="mt-2 p-1 bg-white border rounded d-inline-block">
+                                            <img src="<?= base_url($cardIcon) ?>" height="40">
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold text-muted text-uppercase">
+                                        Title
+                                    </label>
+                                    <input type="text"
+                                           name="cards[<?= $i ?>][aboutTitle]"
+                                           class="form-control"
+                                           value="<?= esc($card['aboutTitle'] ?? '') ?>">
+                                </div>
+
+                                <div>
+                                    <label class="form-label small fw-bold text-muted text-uppercase">
+                                        Description
+                                    </label>
                                     <textarea name="cards[<?= $i ?>][aboutDescription]"
                                               class="form-control"
-                                              rows="3"><?= $card['aboutDescription'] ?? '' ?></textarea>
+                                              rows="3"><?= esc($card['aboutDescription'] ?? '') ?></textarea>
                                 </div>
 
-                                <!-- DELETE CARD -->
-                                <button type="button"
-                                        class="btn btn-danger btn-sm mt-3 remove-card">
-                                    Delete Card
-                                </button>
                             </div>
                         </div>
+                    </div>
                     <?php endforeach; ?>
+
                 </div>
-
-                <!-- ADD CARD -->
-                <button type="button" class="btn btn-success btn-sm" id="add-card">
-                    + Add Card
-                </button>
-
-                <!-- SAVE -->
-                <div class="text-end mt-4">
-                    <button class="btn btn-primary px-4">Save Changes</button>
-                </div>
-
-            </form>
+            </div>
         </div>
-    </div>
+
+        <!-- SAVE -->
+        <div class="text-end mt-4 sticky-bottom bg-white py-3 border-top">
+            <button class="btn btn-dark px-4">
+                <i class="fa fa-save me-2"></i> Save Changes
+            </button>
+        </div>
+
+    </form>
 </div>
 
 <?= $this->endSection() ?>
-
 <?= $this->section('custom_script') ?>
 <script>
 let cardIndex = <?= count($cards) ?>;
 
 // ADD CARD
 document.getElementById('add-card').addEventListener('click', function () {
-    const html = `
-    <div class="card mb-3 card-item">
-        <div class="card-body">
-            <input type="hidden" name="cards[${cardIndex}][id]" value="c_${Date.now()}">
-            <input type="hidden" name="cards[${cardIndex}][deleted]" value="0" class="deleted-flag">
-            <input type="hidden" name="cards[${cardIndex}][old_icon]" value="">
 
-            <div class="row">
-                <div class="col-md-4">
-                    <label class="form-label">Icon</label>
+    const html = `
+    <div class="col-md-6 card-item">
+        <div class="card h-100 border-0 shadow-sm bg-light">
+            <div class="card-body">
+
+                <input type="hidden" name="cards[${cardIndex}][id]" value="c_${Date.now()}">
+                <input type="hidden" name="cards[${cardIndex}][deleted]" value="0" class="deleted-flag">
+                <input type="hidden" name="cards[${cardIndex}][old_icon]" value="">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-white border text-dark">New</span>
+                    <button type="button" class="btn btn-outline-danger btn-sm remove-card border-0">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted text-uppercase">Icon</label>
                     <input type="file" name="cards[${cardIndex}][icon]" class="form-control">
                 </div>
-                <div class="col-md-8">
-                    <label class="form-label">Title</label>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted text-uppercase">Title</label>
                     <input type="text" name="cards[${cardIndex}][aboutTitle]" class="form-control">
                 </div>
-            </div>
 
-            <div class="mt-2">
-                <label class="form-label">Description</label>
-                <textarea name="cards[${cardIndex}][aboutDescription]" class="form-control" rows="3"></textarea>
-            </div>
+                <div>
+                    <label class="form-label small fw-bold text-muted text-uppercase">Description</label>
+                    <textarea name="cards[${cardIndex}][aboutDescription]" class="form-control" rows="3"></textarea>
+                </div>
 
-            <button type="button" class="btn btn-danger btn-sm mt-3 remove-card">
-                Delete Card
-            </button>
+            </div>
         </div>
     </div>`;
 
@@ -170,9 +207,9 @@ document.getElementById('add-card').addEventListener('click', function () {
     cardIndex++;
 });
 
-// DELETE CARD (SOFT DELETE)
+// SOFT DELETE
 document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('remove-card')) {
+    if (e.target.closest('.remove-card')) {
         const card = e.target.closest('.card-item');
         card.querySelector('.deleted-flag').value = 1;
         card.style.display = 'none';

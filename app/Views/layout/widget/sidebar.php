@@ -1,9 +1,9 @@
 <div class="sidebar" data-background-color="dark">
     <div class="sidebar-logo">
         <!-- Logo Header -->
-        <div class="logo-header" data-background-color="dark">
+        <div class="logo-header mt-3" data-background-color="dark">
             <a href="<?= base_url('dashboard') ?>" class="logo">
-                <img src="<?= base_url('public/front_end/img/logo.png') ?>" alt="navbar brand" class="navbar-brand"
+                <img src="<?= base_url('public/front_end/img/cmslogo.jpg') ?>" alt="navbar brand" class="navbar-brand"
                     height="75" />
             </a>
             <div class="nav-toggle">

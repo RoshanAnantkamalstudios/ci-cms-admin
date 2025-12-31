@@ -106,130 +106,93 @@ class HomeController extends BaseController
         ]);
     } 
 
+public function Whychoosesection()
+{
+    $data['data'] = $this->WhyChooseModel->getData();
+    return view('admin/home/whyChooseSection', $data);
+}
 
-     public function Whychoosesection()
-    {
-        $data['data'] = $this->WhyChooseModel->getData();
-     
-        return view('admin/home/whyChooseSection',$data);
+public function whychoosesave()
+{
+    $heading = $this->request->getPost('heading');
+    $cardsInput = $this->request->getPost('cards') ?? [];
+
+    $uploadPath = FCPATH . 'uploads/cards/';
+    if (!is_dir($uploadPath)) {
+        mkdir($uploadPath, 0755, true);
     }
 
-    public function whychoosesave()
-    {
-        $validation = \Config\Services::validation();
+    $cardsData = [];
 
-        $validation->setRules([
-            'heading' => 'required|min_length[3]|max_length[255]',
-        ]);
+    foreach ($cardsInput as $index => $card) {
+        $iconPath = $card['existing_icon'] ?? null;
 
-        if (!$validation->withRequest($this->request)->run()) {
-            return redirect()->back()->withInput()->with('error', 'Please fill the heading field correctly.');
+        $iconFile = $this->request->getFile("cards.$index.icon");
+        if ($iconFile && $iconFile->isValid()) {
+            $newName = $iconFile->getRandomName();
+            $iconFile->move($uploadPath, $newName);
+            $iconPath = 'uploads/cards/' . $newName;
+
+            if (!empty($card['existing_icon']) && file_exists(FCPATH . $card['existing_icon'])) {
+                unlink(FCPATH . $card['existing_icon']);
+            }
         }
 
-        try {
-            $heading = $this->request->getPost('heading');
-            $cardsInput = $this->request->getPost('cards');
-            $cardsData = [];
-
-            // Create upload directory if it doesn't exist
-            $uploadPath = ROOTPATH . 'public/uploads/cards';
-            if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
-            }
-
-            if ($cardsInput && is_array($cardsInput)) {
-                foreach ($cardsInput as $index => $card) {
-                    $iconPath = null;
-
-                    // Handle icon upload
-                    $iconFile = $this->request->getFile("cards.{$index}.icon");
-                    
-                    if ($iconFile && $iconFile->isValid() && !$iconFile->hasMoved()) {
-                        // Upload new icon
-                        $newName = $iconFile->getRandomName();
-                        $iconFile->move($uploadPath, $newName);
-                        $iconPath = 'uploads/cards/' . $newName;
-                    } elseif (!empty($card['existing_icon'])) {
-                        // Keep existing icon
-                        $iconPath = $card['existing_icon'];
-                    }
-
-                    $cardsData[] = [
-                        'icon' => $iconPath,
-                        'title' => $card['title'],
-                        'description' => $card['description']
-                    ];
-                }
-            }
-
-            // Save data
-            if ($this->WhyChooseModel->saveData($heading, $cardsData)) {
-                return redirect()->to(base_url('admin/homewhychoose'))->with('success', 'Cards saved successfully!');
-            } else {
-                return redirect()->back()->with('error', 'Failed to save cards!');
-            }
-
-        } catch (\Exception $e) {
-            log_message('error', 'Cards save error: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-        }
-    }
- 
-     public function whychoosedelete($id)
-    {
-        $about = $this->WhyChooseModel->find($id);
-
-        if ($about) {
-            // delete main icon
-            if ($about['icon'] && file_exists($about['icon'])) {
-                unlink($about['icon']);
-            }
-
-            // delete card icons
-            $cards = json_decode($about['cards'], true);
-            if ($cards) {
-                foreach ($cards as $card) {
-                    if (!empty($card['icon']) && file_exists($card['icon'])) {
-                        unlink($card['icon']);
-                    }
-                }
-            }
-
-            $this->WhyChooseModel->delete($id);
-        }
-
-        return redirect()->to(base_url('admin/homewhychoose'))
-                         ->with('success', 'Section deleted successfully');
+        $cardsData[] = [
+            'icon' => $iconPath,
+            'title' => $card['title'],
+            'description' => $card['description']
+        ];
     }
 
-    public function getwhychooseusCards()
-    {
-        try {
-            $data = $this->WhyChooseModel->getData();
-            
-            // Add full URL to icons
-            if (!empty($data['cards'])) {
-                foreach ($data['cards'] as &$card) {
-                    if (!empty($card['icon'])) {
-                        $card['icon'] = base_url($card['icon']);
-                    }
-                }
-            }
+    $this->WhyChooseModel->saveData($heading, $cardsData);
 
-            return $this->response->setJSON([
-                'status' => 'success',
-                'data' => $data
-            ]);
+    return redirect()->to(base_url('admin/homewhychoose'))
+        ->with('success', 'Cards saved successfully');
+}
 
-        } catch (\Exception $e) {
-            log_message('error', 'API error: ' . $e->getMessage());
-            return $this->response->setStatusCode(500)->setJSON([
-                'status' => 'error',
-                'message' => 'An error occurred while fetching data'
-            ]);
+public function whychoosedelete($index)
+{
+    $row = $this->WhyChooseModel->first();
+    if (!$row) {
+        return redirect()->back()->with('error', 'Data not found');
+    }
+
+    $cards = json_decode($row['cards'], true);
+
+    if (!isset($cards[$index])) {
+        return redirect()->back()->with('error', 'Card not found');
+    }
+
+    if (!empty($cards[$index]['icon']) && file_exists(FCPATH . $cards[$index]['icon'])) {
+        unlink(FCPATH . $cards[$index]['icon']);
+    }
+
+    unset($cards[$index]);
+    $cards = array_values($cards);
+
+    $this->WhyChooseModel->update($row['id'], [
+        'cards' => json_encode($cards)
+    ]);
+
+    return redirect()->back()->with('success', 'Card deleted successfully');
+}
+
+public function getwhychooseusCards()
+{
+    $data = $this->WhyChooseModel->getData();
+
+    foreach ($data['cards'] as &$card) {
+        if (!empty($card['icon'])) {
+            $card['icon'] = base_url($card['icon']);
         }
     }
 
+    return $this->response->setJSON([
+        'status' => true,
+        'data' => $data
+    ]);
+}
 
     //our client Section
        public function ourclients()

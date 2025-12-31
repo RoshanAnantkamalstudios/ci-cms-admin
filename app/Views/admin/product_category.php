@@ -74,7 +74,7 @@
         </div>
 
         <div class="card-body table-responsive">
-            <table class="table table-bordered table-hover align-middle">
+            <table class="table table-bordered table-hover align-middle" id="categoryTable">
                 <thead class="table-light">
                     <tr>
                         <th>#</th>
@@ -97,14 +97,28 @@
                             </td>
                             <td><?= esc($row['category_name']) ?></td>
                             <td><?= esc($row['heading']) ?></td>
-                            <td>
-                                <a href="<?= base_url('admin/product-category/edit/'.$row['id']) ?>"
+                            <!-- <td>
+                                <a href="<= base_url('admin/product-category/edit/'.$row['id']) ?>"
                                    class="btn btn-sm btn-warning">Edit</a>
 
-                                <a href="<?= base_url('admin/product-category/delete/'.$row['id']) ?>"
+                                <a href="<= base_url('admin/product-category/delete/'.$row['id']) ?>"
                                    class="btn btn-sm btn-danger"
                                    onclick="return confirm('Delete this category?')">
                                     Delete
+                                </a>
+                            </td> -->
+                            <td class="text-nowrap">
+                                <a href="<?= base_url('admin/product-category/edit/'.$row['id']) ?>"
+                                class="btn btn-sm btn-outline-warning"
+                                title="Edit">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+
+                                <a href="<?= base_url('admin/product-category/delete/'.$row['id']) ?>"
+                                class="btn btn-sm btn-outline-danger"
+                                title="Delete"
+                                onclick="return confirm('Delete this category?')">
+                                    <i class="fa fa-trash"></i>
                                 </a>
                             </td>
                         </tr>
@@ -126,9 +140,24 @@
 <?= $this->section('custom_script') ?>
 <script>
     $(document).ready(function () {
+
+        // Summernote
         $('.summernote').summernote({
             height: 200
         });
+
+        // DataTable
+        $('#categoryTable').DataTable({
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50],
+            ordering: true,
+            searching: true,
+            responsive: true,
+            columnDefs: [
+                { orderable: false, targets: [1, 4] } // Image & Actions not sortable
+            ]
+        });
+
     });
 </script>
 <?= $this->endSection() ?>

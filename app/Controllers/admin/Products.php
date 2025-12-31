@@ -1,7 +1,7 @@
 <?php namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
-use App\Models\ProductModel;
+use App\Models\PisumProductModel;
 use App\Models\ProductCategoryModel;
 
 class Products extends BaseController
@@ -12,7 +12,7 @@ class Products extends BaseController
 
     public function __construct()
     {
-        $this->productModel = new ProductModel();
+        $this->productModel = new PisumProductModel();
         $this->categoryModel = new ProductCategoryModel();
     }
 

@@ -63,17 +63,20 @@
                                             : esc($product['market_demand']) ?>
                                     </td>
 
-                                    <td>
+                                    <td class="text-nowrap">
                                         <a href="<?= base_url('admin/products/edit/' . $product['id']) ?>"
-                                           class="btn btn-sm btn-warning">
-                                            Edit
+                                           class="btn btn-sm btn-outline-warning">
+                                           <i class="fa fa-edit"></i>
                                         </a>
 
                                         <a href="<?= base_url('admin/products/delete/' . $product['id']) ?>"
-                                           class="btn btn-sm btn-danger"
+                                           class="btn btn-sm btn-outline-danger"
+                                title="Delete"
                                            onclick="return confirm('Are you sure?')">
-                                            Delete
+                                            <i class="fa fa-trash"></i>
                                         </a>
+
+
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

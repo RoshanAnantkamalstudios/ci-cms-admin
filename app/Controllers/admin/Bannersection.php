@@ -20,25 +20,57 @@ class Bannersection extends BaseController
     }
 
     // DataTable fetch
+    // public function fetch()
+    // {
+    //     $rows = $this->bannersection->findAll();
+    //     $data = [];
+
+    //     foreach ($rows as $row) {
+    //         $data[] = [
+    //             $row['page_key'],
+    //             $row['title'],
+    //             '<img src="'.base_url('uploads/cms/'.$row['banner_image']).'" height="40">',
+    //             '
+    //             <button class="btn btn-sm btn-primary edit" data-id="'.$row['id'].'">Edit</button>
+    //             <button class="btn btn-sm btn-danger delete" data-id="'.$row['id'].'">Delete</button>
+    //             '
+    //         ];
+    //     }
+
+    //     return $this->response->setJSON(['data' => $data]);
+    // }
+
     public function fetch()
-    {
-        $rows = $this->bannersection->findAll();
-        $data = [];
+{
+    $rows = $this->bannersection->findAll();
+    $data = [];
 
-        foreach ($rows as $row) {
-            $data[] = [
-                $row['page_key'],
-                $row['title'],
-                '<img src="'.base_url('uploads/cms/'.$row['banner_image']).'" height="40">',
-                '
-                <button class="btn btn-sm btn-primary edit" data-id="'.$row['id'].'">Edit</button>
-                <button class="btn btn-sm btn-danger delete" data-id="'.$row['id'].'">Delete</button>
-                '
-            ];
-        }
+    foreach ($rows as $row) {
+        $data[] = [
+            esc($row['page_key']),
+            esc($row['title']),
+            '<img src="'.base_url('uploads/cms/'.$row['banner_image']).'" height="40">',
 
-        return $this->response->setJSON(['data' => $data]);
+            // ACTIONS (Font Awesome)
+            '
+            <button class="btn btn-sm btn-warning edit"
+                    data-id="'.$row['id'].'"
+                    title="Edit">
+                <i class="fa fa-pen"></i>
+            </button>
+
+            <button class="btn btn-sm btn-danger delete"
+                    data-id="'.$row['id'].'"
+                    title="Delete">
+                <i class="fa fa-trash"></i>
+            </button>
+            '
+        ];
     }
+
+    return $this->response->setJSON(['data' => $data]);
+}
+
 
     // Add / Edit
     public function save()

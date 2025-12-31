@@ -10,24 +10,20 @@ class HomeWhyChooseModel extends Model
     protected $primaryKey = 'id';
     protected $allowedFields = ['heading', 'cards'];
     protected $useTimestamps = true;
-    protected $createdField = 'created_at';
-    protected $updatedField = 'updated_at';
 
     public function getData()
     {
-        $data = $this->first();
-        
-        if ($data) {
-            // Decode JSON cards
-            $data['cards'] = json_decode($data['cards'], true) ?? [];
-        } else {
-            $data = [
-                'heading' => '',
-                'cards' => []
-            ];
+        $row = $this->first();
+
+        if ($row) {
+            $row['cards'] = json_decode($row['cards'], true) ?? [];
+            return $row;
         }
-        
-        return $data;
+
+        return [
+            'heading' => '',
+            'cards' => []
+        ];
     }
 
     public function saveData($heading, $cards)
@@ -38,11 +34,10 @@ class HomeWhyChooseModel extends Model
         ];
 
         $existing = $this->first();
-        
         if ($existing) {
-            return $this->update(1, $data);
-        } else {
-            return $this->insert($data);
+            return $this->update($existing['id'], $data);
         }
+
+        return $this->insert($data);
     }
 }

@@ -117,7 +117,7 @@ $(function () {
 
             if (res.banner_image) {
                 $('#previewImg')
-                    .attr('src', "<?= base_url('uploads/bannersection/') ?>" + res.banner_image)
+                    .attr('src', "<?= base_url('uploads/cms/') ?>" + res.banner_image)
                     .show();
             }
 

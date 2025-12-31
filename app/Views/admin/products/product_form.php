@@ -44,6 +44,18 @@
                 <?php endif; ?>
             </div>
 
+                    <!-- Heading -->
+        <div class="mb-3">
+            <label>Heading</label>
+            <input type="text" name="heading" class="form-control" value="<?= isset($product) ? esc($product['heading']) : old('heading') ?>">
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+            <label>Description</label>
+            <textarea name="description" class="form-control" rows="4"><?= isset($product) ? esc($product['description']) : old('description') ?></textarea>
+        </div>
+
             <div class="col-md-6 mb-3">
                 <label>Market Demand</label>
                 <textarea name="market_demand" class="form-control" rows="3"><?= isset($product) ? esc($product['market_demand']) : old('market_demand') ?></textarea>
@@ -112,17 +124,7 @@
             <textarea name="uses_benefits" class="form-control" rows="3"><?= isset($product) ? esc($product['uses_benefits']) : old('uses_benefits') ?></textarea>
         </div>
 
-        <!-- Heading -->
-        <div class="mb-3">
-            <label>Heading</label>
-            <input type="text" name="heading" class="form-control" value="<?= isset($product) ? esc($product['heading']) : old('heading') ?>">
-        </div>
 
-        <!-- Description -->
-        <div class="mb-3">
-            <label>Description</label>
-            <textarea name="description" class="form-control" rows="4"><?= isset($product) ? esc($product['description']) : old('description') ?></textarea>
-        </div>
 
         <!-- Other Section -->
         <div class="mb-3">
