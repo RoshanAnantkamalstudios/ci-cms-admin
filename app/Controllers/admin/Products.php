@@ -19,7 +19,7 @@ class Products extends BaseController
     // List all products
     public function index()
     {
-        $data['products'] = $this->productModel->getProducts();
+        $data['products'] =  $this->productModel->where('status', 1)->getProducts();
         $data['categories'] = $this->categoryModel->findAll();
         return view('admin/products/product_index', $data);
     }
@@ -88,7 +88,7 @@ class Products extends BaseController
     // Show Edit form
     public function edit($id)
     {
-        $product = $this->productModel->getProducts($id);
+        $product =  $this->productModel->where('status', 1)->getProducts($id);
 
         // Decode JSON for form
         $product['specifications'] = json_decode($product['specifications'], true) ?? ['key'=>[], 'value'=>[]];
@@ -168,25 +168,40 @@ class Products extends BaseController
     }
 
     // Delete product
+    // public function delete($id)
+    // {
+    //     $product = $this->productModel->getProducts($id);
+
+    //     if ($product && $product['image'] && file_exists(FCPATH . 'uploads/products/' . $product['image'])) {
+    //         unlink(FCPATH . 'uploads/products/' . $product['image']);
+    //     }
+
+    //     $existing_other = json_decode($product['other_section'], true) ?? [];
+    //     foreach ($existing_other as $other) {
+    //         if (!empty($other['image']) && file_exists(FCPATH . 'uploads/products/' . $other['image'])) {
+    //             unlink(FCPATH . 'uploads/products/' . $other['image']);
+    //         }
+    //     }
+
+    //     $this->productModel->delete($id);
+
+    //     return redirect()->to(base_url('admin/grocery_products'))->with('success', 'Product deleted successfully');
+    // }
+
     public function delete($id)
-    {
-        $product = $this->productModel->getProducts($id);
-
-        if ($product && $product['image'] && file_exists(FCPATH . 'uploads/products/' . $product['image'])) {
-            unlink(FCPATH . 'uploads/products/' . $product['image']);
-        }
-
-        $existing_other = json_decode($product['other_section'], true) ?? [];
-        foreach ($existing_other as $other) {
-            if (!empty($other['image']) && file_exists(FCPATH . 'uploads/products/' . $other['image'])) {
-                unlink(FCPATH . 'uploads/products/' . $other['image']);
-            }
-        }
-
-        $this->productModel->delete($id);
-
-        return redirect()->to(base_url('admin/grocery_products'))->with('success', 'Product deleted successfully');
+{
+    if (!$id) {
+        return redirect()->back()->with('error', 'Invalid product ID');
     }
+
+    $this->productModel
+        ->set('status', 0)
+        ->where('id', $id)
+        ->update();
+
+    return redirect()->to(base_url('admin/grocery_products'))
+        ->with('success', 'Product deleted successfully');
+}
 
     // Get product(s) by slug or all
     public function productBySlug($slug = null)

@@ -4,7 +4,7 @@ use CodeIgniter\Model;
 
 class PisumProductModel extends Model
 {
-    protected $table = 'products';
+    protected $table = 'products_grocery';
     protected $primaryKey = 'id';
     
     protected $allowedFields = [
@@ -18,7 +18,8 @@ class PisumProductModel extends Model
         'uses_benefits',
         'heading',
         'description',
-        'other_section'
+        'other_section',
+         'status' // 👈 REQUIRED
     ];
     
     protected $useTimestamps = true;

@@ -17,7 +17,8 @@ class ProductCategory extends BaseController
     public function index()
     {
         return view('admin/product_category', [
-            'categories' => $this->model->orderBy('id', 'DESC')->findAll(),
+            // 'categories' => $this->model->orderBy('id', 'DESC')->findAll(),
+            'categories' => $this->model->where('status', 1)->orderBy('id', 'DESC')->findAll(),
             'editData'   => null
         ]);
     }
@@ -26,10 +27,13 @@ class ProductCategory extends BaseController
     public function save()
     {
         $image = $this->uploadImage();
+        $category_name = $this->request->getPost('category_name');
+           $slug = url_title($category_name, '-', true);
 
         $this->model->insert([
             'background_image' => $image,
-            'category_name'       => $this->request->getPost('category_name'),
+            'category_name'       => $category_name,
+            'slug'               => $slug,
             'heading'          => $this->request->getPost('heading'),
             'description'      => $this->request->getPost('description')
         ]);
@@ -41,7 +45,9 @@ class ProductCategory extends BaseController
     public function edit($id)
     {
         return view('admin/product_category', [
-            'categories' => $this->model->orderBy('id', 'DESC')->findAll(),
+            // 'categories' => $this->model->orderBy('id', 'DESC')->findAll(),
+            
+            'categories' => $this->model->where('status', 1)->orderBy('id', 'DESC')->findAll(),
             'editData'   => $this->model->find($id)
         ]);
     }
@@ -69,18 +75,27 @@ class ProductCategory extends BaseController
     }
 
     // DELETE
+    // public function delete($id)
+    // {
+    //     $data = $this->model->find($id);
+
+    //     if ($data && $data['background_image'] && file_exists($data['background_image'])) {
+    //         unlink($data['background_image']);
+    //     }
+
+    //     $this->model->delete($id);
+
+    //     return redirect()->back()->with('message', 'Category deleted successfully');
+    // }
+
     public function delete($id)
-    {
-        $data = $this->model->find($id);
+{
+    $this->model->update($id, [
+        'status' => 0
+    ]);
 
-        if ($data && $data['background_image'] && file_exists($data['background_image'])) {
-            unlink($data['background_image']);
-        }
-
-        $this->model->delete($id);
-
-        return redirect()->back()->with('message', 'Category deleted successfully');
-    }
+    return redirect()->back()->with('message', 'Category deleted successfully');
+}
 
     // IMAGE UPLOAD
     private function uploadImage()

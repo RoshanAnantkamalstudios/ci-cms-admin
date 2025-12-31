@@ -177,7 +177,7 @@
                         outputMsg.innerHTML = body;
                         if (response.status === true) {
                             setTimeout(() => {
-                                window.location.href = '<?= base_url("/dashboard") ?>';
+                                window.location.href = '<?= base_url("/admin/dashboard") ?>';
                             }, 1000);
                         }
                     },

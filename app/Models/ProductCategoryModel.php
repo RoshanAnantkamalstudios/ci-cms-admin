@@ -12,8 +12,10 @@ class ProductCategoryModel extends Model
     protected $allowedFields = [
         'background_image',
         'category_name',
+        'slug',
         'heading',
-        'description'
+        'description',
+        'status'   // 👈 REQUIRED
     ];
 
     protected $useTimestamps = true;
