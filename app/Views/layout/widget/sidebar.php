@@ -86,6 +86,9 @@
                         </ul>
                     </div>
                 </li>
+                <li class="nav-item"><a href="<?= base_url('logout') ?>"><i class="fas fa-sign-out-alt"></i>
+                        <p>Logout</p>
+                    </a></li>
             </ul>
         </div>
     </div>
