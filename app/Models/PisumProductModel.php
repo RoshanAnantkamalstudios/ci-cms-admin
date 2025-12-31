@@ -1,42 +1,42 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
 
 use CodeIgniter\Model;
 
 class PisumProductModel extends Model
 {
-    protected $table = 'products';
-    protected $primaryKey = 'id';
-    
-    protected $allowedFields = [
+    protected $table            = 'products';
+    protected $primaryKey       = 'id';
+    protected $useAutoIncrement = true;
+    protected $returnType       = 'array';
+    protected $useSoftDeletes   = false;
+    protected $protectFields    = true;
+    protected $allowedFields    = [
         'category_id',
-        'title',
+        'name',
         'slug',
-        'image',
-        'market_demand',
-        'specifications',
-        'ingredients',
-        'uses_benefits',
-        'heading',
         'description',
-        'other_section'
+        'images',
+        'status',
+        'created_at',
+        'updated_at'
     ];
-    
+
     protected $useTimestamps = true;
+    protected $dateFormat    = 'datetime';
+    protected $createdField  = 'created_at';
+    protected $updatedField  = 'updated_at';
 
-    // Get all products or single by ID
-    public function getProducts($id = false)
+    public function getByCategory($categoryId)
     {
-        if ($id === false) {
-            return $this->orderBy('id', 'DESC')->findAll();
-        } else {
-            return $this->where(['id' => $id])->first();
+        $rows = $this->where('category_id', $categoryId)->orderBy('created_at', 'DESC')->findAll();
+        foreach ($rows as &$row) {
+            $imgs = json_decode($row['images'] ?? '[]', true);
+            $row['image_urls'] = array_map(function ($img) {
+                return base_url('uploads/products/' . $img);
+            }, $imgs ?: []);
         }
-    }
-
-    // Get single product by slug
-    public function getBySlug($slug)
-    {
-        return $this->where('slug', $slug)->first();
+        return $rows;
     }
 }
-

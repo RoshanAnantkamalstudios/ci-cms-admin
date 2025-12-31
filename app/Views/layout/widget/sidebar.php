@@ -34,8 +34,8 @@
                         <ul class="nav nav-collapse">
                             <!-- <li><a href="<?= base_url('about_our_company') ?>"><span class="sub-item">About Our Company</span></a> -->
                             <li><a href="<?= base_url('admin/homehero') ?>"><span class="sub-item">Hero Section</span></a>
-                             <li><a href="<?= base_url('admin/homewhychoose') ?>"><span class="sub-item">Why Choose Us Section</span></a>
-                              <li><a href="<?= base_url('admin/ourclients') ?>"><span class="sub-item">Our Clients</span></a>
+                            <li><a href="<?= base_url('admin/homewhychoose') ?>"><span class="sub-item">Why Choose Us Section</span></a>
+                            <li><a href="<?= base_url('admin/ourclients') ?>"><span class="sub-item">Our Clients</span></a>
 
 
                             </li>
@@ -50,15 +50,26 @@
                 <li class="nav-item"><a href="<?= base_url('about_us') ?>"><i class="fa-regular fa-address-card"></i>
                         <p>About Us</p>
                     </a></li>
-                 <li class="nav-item"><a href="<?= base_url('admin/certificates') ?>"><i class="fa-regular fa-address-card"></i>
+                <li class="nav-item"><a href="<?= base_url('admin/categories') ?>"><i class="fas fa-layer-group"></i>
+                        <p>Categories</p>
+                    </a></li>
+                <li class="nav-item"><a href="<?= base_url('admin/products') ?>"><i class="fas fa-boxes"></i>
+                        <p>Products</p>
+                    </a></li>
+                <li class="nav-item"><a href="<?= base_url('admin/services') ?>"><i class="fas fa-briefcase"></i>
+                        <p>Services</p>
+                    </a></li>
+                <li class="nav-item"><a href="<?= base_url('admin/contact_us') ?>"><i class="fas fa-envelope"></i>
+                <li class="nav-item"><a href="<?= base_url('admin/certificates') ?>"><i class="fa-regular fa-address-card"></i>
                         <p>Certificate Section</p>
                     </a></li>
                 <li class="nav-item"><a href="<?= base_url('contact_us') ?>"><i class="fas fa-envelope"></i>
                         <p>Contact Us</p>
-                <li class="nav-item"><a href="<?= base_url('admin/bannersection') ?>"><i class="fas fa-envelope"></i>
+                    </a></li>
+                <li class="nav-item"><a href="<?= base_url('admin/bannersection') ?>"><i class="fas fa-image"></i>
                         <p>All Banners Section</p>
                     </a></li>
-                
+
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#product">
                         <i class="fas fa-th-list"></i>
@@ -69,8 +80,8 @@
                         <ul class="nav nav-collapse">
                             <!-- <li><a href="<?= base_url('about_our_company') ?>"><span class="sub-item">About Our Company</span></a> -->
                             <li><a href="<?= base_url('admin/product-category') ?>"><span class="sub-item"> Product Category</span></a>
-                             <li><a href="<?= base_url('admin/products') ?>"><span class="sub-item">Products </span></a>
-    
+                            <li><a href="<?= base_url('admin/products') ?>"><span class="sub-item">Products </span></a>
+
                         </ul>
                     </div>
                 </li>
